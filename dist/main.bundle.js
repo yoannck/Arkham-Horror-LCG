@@ -33,7 +33,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var ArhkamHorrorService = (function () {
     function ArhkamHorrorService(_http) {
         this._http = _http;
-        this.url = 'http://localhost:8081';
+        // private url = 'http://localhost:8081';
+        // private url = document.location.protocol + '//' + document.location.hostname + ':my_port'
+        this.url = document.location.protocol + '//' + document.location.host;
         this.api = this.url + "/api";
         this.socket = __WEBPACK_IMPORTED_MODULE_5_socket_io_client__(this.url);
     }

@@ -13,4 +13,4 @@ Run `node server.js` to run the server.
 
 ## Prod
 
-Run `ng build && node server.js` to build the project and run the server.
+Run `ng build && node server.js` or `npm run deploy` to build the project and run the server.

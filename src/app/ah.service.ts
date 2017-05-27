@@ -7,7 +7,7 @@ import * as io from 'socket.io-client';
 
 @Injectable()
 export class ArhkamHorrorService {
-  private url = 'http://localhost:8081';
+  private url = document.location.protocol + '//' + document.location.host;
   private api = `${this.url}/api`;
   private socket;
 
