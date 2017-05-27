@@ -1,0 +1,198 @@
+<div class="app-content" style="text-align:center" *ngIf="!startGame">
+  <md-select placeholder="Select Your Campaign" (change)="selectCampaign($event)">
+    <md-option *ngFor="let campaign of campaigns" [value]="campaign.label">
+      {{ campaign.label }}
+    </md-option>
+  </md-select>
+  <md-select placeholder="Select Your Difficulty" (change)="selectDifficulty($event)">
+    <md-option *ngFor="let difficulty of difficulties" [value]="difficulty.label">
+      {{ difficulty.label }}
+    </md-option>
+  </md-select>
+  <button md-raised-button *ngIf="sCampaign && sDifficulty" (click)="newHost()">New Host !</button>
+  <div fxLayoutWrap fxLayoutAlign="center center">
+    <md-card fxFlex="25%" style="width:300px;margin:5px" *ngFor="let host of hosts">
+      <md-card-header>
+        <md-card-title>{{ host.name }} : {{ host.difficulty }}</md-card-title>
+      </md-card-header>
+      <img md-card-image src="http://cdn.miniaturemarket.com/media/catalog/product/f/f/ffguffs74.jpg">
+      <md-card-content>
+        <p> {{ host.characters.length }} Player(s) in game </p>
+        <md-select placeholder="Select Your Character" (change)="selectCharacter($event)">
+          <md-option *ngFor="let character of availableCharacters(host.characters)" [value]="character.id">
+            {{ character.label }}
+          </md-option>
+        </md-select>
+      </md-card-content>
+      <md-card-actions>
+        <button md-button (click)="play(host)" >PLAY !</button>
+        <button md-button (click)="spectator(host)" >SPECTATOR !</button>
+      </md-card-actions>
+    </md-card>
+  </div>
+  <div *ngIf="deck">
+    <h2>CHARACTER</h2>
+    <img src="https://arkhamdb.com/bundles/cards/{{ deck.investigator }}.png" (error)="fixUrl(deck.investigator, $event)"  class="card-bottom" />
+    <img src="https://arkhamdb.com/bundles/cards/{{ deck.investigator }}b.png" (error)="fixUrl(deck.investigator+'b', $event)"  class="card-bottom" />
+    <h2>ASSETS</h2>
+    <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" *ngFor="let card of deck.assets" />
+    <h2>EVENTS</h2>
+    <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" *ngFor="let card of deck.events" />
+    <h2>SKILLS</h2>
+    <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" *ngFor="let card of deck.skills" />
+    <h2>WEAKNESS</h2>
+    <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" *ngFor="let card of deck.weakness" />
+    <h2>EVOLUTION</h2>
+    <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" *ngFor="let card of deck.evolution" />
+  </div>
+
+  <!-- ALL CARDS -->
+  <!-- <div fxLayoutWrap fxLayoutAlign="center center" style="margin: 80px;">
+    <div fxFlex style="position:relative;padding-bottom: 30px;" *ngFor="let card of cc">
+      <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" />
+    </div>
+  </div> -->
+
+</div>
+
+<!-- HOST -->
+
+<div class="app-content" *ngIf="startGame && host">
+  <div fxLayout="row" fxLayoutAlign="start start" style="padding-bottom: 50px;">
+    <div style="position:relative" (click)="seeEDiscard = !seeEDiscard">
+      <img src="https://raw.githubusercontent.com/GeckoTH/arkham-horror/master/o8g/cards/encounter.jpg" class="card" />
+      <span style="position:absolute;top: 38%;left: 50%;transform: translate(-50%, -50%);color: white;">{{ host.ediscard.length }}</span>
+    </div>
+    <div style="position:relative" (click)="drawEncounter()">
+      <img src="https://raw.githubusercontent.com/GeckoTH/arkham-horror/master/o8g/cards/encounter.jpg" class="card" />
+      <span style="position:absolute;top: 38%;left: 50%;transform: translate(-50%, -50%);color: white;">{{ host.campaign.encounter.length }}</span>
+    </div>
+    <div>
+      <img src="https://arkhamdb.com/bundles/cards/{{ host.campaign.difficulty }}.png" (error)="fixUrl(host.campaign.difficulty, $event)" class="card-top" />
+    </div>
+    <div style="position:relative" *ngIf="host.campaign.agenda_active">
+      <img src="https://arkhamdb.com/bundles/cards/{{ host.campaign.agenda_active }}.png" class="card-top" (error)="fixUrl(host.campaign.agenda_active, $event)" (click)="newAgenda()" />
+      <a md-mini-fab style="position:absolute;bottom: 0;left: 0;color: white;" (click)="upDoom()">{{ host.dooms }}</a>
+    </div>
+    <div style="position:relative" *ngIf="host.campaign.act_active">
+      <img src="https://arkhamdb.com/bundles/cards/{{ host.campaign.act_active }}.png" class="card-top" (error)="fixUrl(host.campaign.act_active, $event)" (click)="newAct()" />
+      <a md-mini-fab style="position:absolute;bottom: 0;right: 0;color: white;" (click)="upClue()">{{ host.clues }}</a>
+    </div>
+    <div style="text-align:center" *ngFor="let card of host.campaign.setup">
+      <div style="position:relative;width:145px" >
+        <img src="https://raw.githubusercontent.com/GeckoTH/arkham-horror/master/o8g/cards/encounter.jpg" class="card" />
+        <md-select style="position:absolute;top:-35px;left:0;" placeholder="Location" (change)="moveEncounter($event, card)">
+          <md-option *ngFor="let location of host.locations; let i = index" [value]="i">{{ i }}</md-option>
+        </md-select>
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row" style="padding-bottom: 50px;text-align:center" fxLayoutAlign="center center" *ngIf="host">
+    <div fxFlex="12%" style="text-align:center" *ngFor="let location of host.locations; let l = index">
+      <div style="position:relative;width:145px">
+        <img src="https://arkhamdb.com/bundles/cards/{{ location.id + ((location.seal) ? 'b' : '') }}.png" (error)="fixUrl(location.id, $event)" class="card-top" (click)="moveCharacter(l)" />
+        <a md-mini-fab *ngIf="location.seal" style="position:absolute;top: 100%;left: 30%;transform: translate(-50%, -50%);color: white;" (click)="openSeal(l)"><md-icon>lock_open</md-icon></a>
+        <a md-mini-fab style="position:absolute;top: 100%;transform: translate(-50%, -50%);color: white;" (click)="upIndice(l)">{{ location.indices }}</a>
+        <div style="position:absolute;top:-20px;">
+          <span *ngFor="let player of location.characters">| {{ player }} |</span>
+        </div>
+      </div>
+      <div *ngFor="let card of location.cards">
+        <div style="position:relative;width:145px;margin-top:70px" >
+          <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)" class="card-top" />
+          <a md-mini-fab style="position:absolute;top: 100%;left: 15%;color: white;" (click)="discardEncounterInLocation(card, l)"><md-icon>delete</md-icon></a>
+          <a md-mini-fab style="position:absolute;top: 100%;left: 50%;color: white;" (click)="charge(card)">{{ displayCharge(card) }}</a>
+          <md-select style="position:absolute;top:-35px;left:0;" placeholder="Location" (change)="moveEncounter($event, card)">
+            <md-option *ngFor="let location of host.locations; let i = index" [value]="i">
+              {{ i }}
+            </md-option>
+          </md-select>
+        </div>
+      </div>
+    </div>
+    <div fxFlex="12%" style="text-align:center" *ngFor="let card of host.encounters">
+      <div style="position:relative;width:145px" >
+        <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)" class="card-top" />
+        <a md-mini-fab style="position:absolute;top: 100%;left: 15%;color: white;" (click)="discardEncounter(card)"><md-icon>delete</md-icon></a>
+        <a md-mini-fab style="position:absolute;top: 100%;left: 50%;color: white;" (click)="charge(card)">{{ displayCharge(card) }}</a>
+        <md-select style="position:absolute;top:-35px;left:0;" placeholder="Location" (change)="moveEncounter($event, card)">
+          <md-option *ngFor="let location of host.locations; let i = index" [value]="i">
+            {{ i }}
+          </md-option>
+        </md-select>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center" *ngIf="chaos">
+    CHAOS : {{ chaos }}
+    <button md-raised-button (click)="chaos = null">OUah !</button>
+  </div>
+
+<!-- DISCARD -->
+
+  <div fxLayout="row" style="padding-bottom: 50px;" fxLayoutAlign="center center" *ngIf="seeDiscard">
+    <div fxFlex="12%" *ngFor="let card of sdiscard">
+      <div style="position:relative;width:145px" >
+        <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" />
+        <a md-mini-fab style="position:absolute;top: 100%;left: 30%;transform: translate(-50%, -50%);color: white;" (click)="backStack(card)"><md-icon>add</md-icon></a>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" style="padding-bottom: 50px;" fxLayoutAlign="center center" *ngIf="seeEDiscard">
+    <div fxFlex="12%" *ngFor="let card of host.ediscard">
+      <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" />
+    </div>
+  </div>
+  <div fxLayoutWrap fxLayoutAlign="center center" style="margin: 80px;" *ngIf="sDeck">
+    <div fxFlex style="position:relative;padding-bottom: 30px;" *ngFor="let card of deck.stack">
+      <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" />
+      <a md-mini-fab style="position:absolute;top:70%;left:0%;" (click)="deckToStack(card)"><md-icon>add</md-icon></a>
+    </div>
+  </div>
+
+<!-- PLAYER -->
+
+  <div fxLayout="row" fxLayoutAlign="start center" style="padding-bottom: 50px;" *ngIf="deck">
+    <div style="position:relative;" (click)="seeDiscard = !seeDiscard">
+      <img src="https://raw.githubusercontent.com/GeckoTH/arkham-horror/master/o8g/cards/card.jpg" class="card" />
+      <span style="position:absolute;top: 38%;left: 50%;transform: translate(-50%, -50%);color: white;">{{ sdiscard.length }}</span>
+    </div>
+    <div style="position:relative;">
+      <img src="https://raw.githubusercontent.com/GeckoTH/arkham-horror/master/o8g/cards/card.jpg" class="card" (click)="drawDeck()" />
+      <span style="position:absolute;top: 38%;left: 50%;transform: translate(-50%, -50%);color: white;">{{ deck.stack.length }}</span>
+      <a md-mini-fab style="position:absolute;top: 100%;" (click)="seeDeck()"><md-icon>visibility</md-icon></a>
+    </div>
+    <div style="position:relative;">
+      <img src="https://arkhamdb.com/bundles/cards/{{ deck.investigator }}.png" class="card-bottom" (error)="fixUrl(deck.investigator, $event)" />
+    </div>
+    <div style="position:relative;">
+      <p style="margin:0px"> A : <md-slider max="3" min="0" thumb-label="true" [(value)]="character.a"></md-slider> </p>
+      <p style="margin:0px"> D : <md-slider max="10" min="0" thumb-label="true" [(value)]="character.d"></md-slider> </p>
+      <p style="margin:0px"> H : <md-slider max="10" min="0" thumb-label="true" [(value)]="character.h"></md-slider> </p>
+      <p style="margin:0px"> R : <md-slider max="10" min="0" thumb-label="true" [(value)]="character.r"></md-slider> </p>
+      <p style="margin:0px"> I : <md-slider max="10" min="0" thumb-label="true" [(ngModel)]="character.i"></md-slider> </p>
+    </div>
+    <div style="position:relative;margin:5px">
+      <img style="width:50px" src="https://raw.githubusercontent.com/GeckoTH/arkham-horror/master/o8g/cards/chaostokenback.jpg" (click)="pickChaos()" />
+      <p><a md-mini-fab (click)="newLocation()"><md-icon>location_on</md-icon></a></p>
+    </div>
+    <div fxFlex style="position:relative;width:145px" *ngFor="let card of assets;">
+      <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" />
+      <a md-mini-fab style="position:absolute;top: 100%;left: 0px;color: white;" (click)="discardAsset(card)"><md-icon>delete</md-icon></a>
+      <a md-mini-fab style="position:absolute;top: 100%;left: 50px;color: white;" (click)="aCharge[card] = aCharge[card] + 1">{{ aCharge[card] }}</a>
+    </div>
+  </div>
+
+  <div fxLayout="row" style="padding-bottom: 50px;" fxLayoutAlign="center center" *ngIf="deck">
+    <div fxFlex="12%" *ngFor="let card of stack">
+      <div style="position:relative;width:145px" >
+        <img src="https://arkhamdb.com/bundles/cards/{{ card }}.png" (error)="fixUrl(card, $event)"  class="card-bottom" />
+        <a md-mini-fab style="position:absolute;top: 100%;left: 30%;transform: translate(-50%, -50%);color: white;" (click)="discard(card)"><md-icon>delete</md-icon></a>
+        <a md-mini-fab style="position:absolute;top: 100%;left: 70%;transform: translate(-50%, -50%);color: white;" (click)="equip(card)"><md-icon>all_inclusive</md-icon></a>
+      </div>
+    </div>
+  </div>
+
+</div>

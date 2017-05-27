@@ -1,6 +1,10 @@
-# Ahlcg Online
+# Arkham Horror LCG Online
 
-Ahlcg Online
+Arkham Horror LCG Online (Multiplayer)
+
+## Installation
+
+Run `npm install`
 
 ## Development server
 

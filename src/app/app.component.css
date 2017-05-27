@@ -1,0 +1,97 @@
+.right { float: right; }
+.left { float: left; }
+.dialog-header-image {
+  background-image: url('https://s-media-cache-ak0.pinimg.com/564x/47/e8/3f/47e83fe56637e3583a10cee138c45342.jpg');
+  background-size: cover;
+}
+.text-shadow { color:transparent; text-shadow:0 0 30px #000; }
+.card, .card-top, .card-bottom {
+  max-height:150px;
+  display:inline-block;
+  position: relative;
+  -webkit-transition: all 200ms ease-in;
+  -webkit-transform: scale(1);
+  -ms-transition: all 200ms ease-in;
+  -ms-transform: scale(1);
+  -moz-transition: all 200ms ease-in;
+  -moz-transform: scale(1);
+  transition: all 200ms ease-in;
+  transform: scale(1);
+}
+.card-top:hover
+{
+  z-index: 2;
+  -webkit-transition: all 500ms ease-in;
+  -webkit-transform: translate(0%, 100%) scale(3);
+  -ms-transition: all 500ms ease-in;
+  -ms-transform: translate(0%, 100%) scale(3);
+  -moz-transition: all 500ms ease-in;
+  -moz-transform: translate(0%, 100%) scale(3);
+  transition: all 500ms ease-in;
+  transform: translate(0%, 100%) scale(3);
+}
+.card-bottom:hover {
+  z-index: 2;
+  -webkit-transition: all 500ms ease-in;
+  -webkit-transform: translate(0%, -100%) scale(3);
+  -ms-transition: all 500ms ease-in;
+  -ms-transform: translate(0%, -100%) scale(3);
+  -moz-transition: all 500ms ease-in;
+  -moz-transform: translate(0%, -100%) scale(3);
+  transition: all 500ms ease-in;
+  transform: translate(0%, -100%) scale(3);
+}
+
+.app-content {
+  padding-top: 30px;
+}
+.app-content md-card, .mt-component-card {
+  margin: 20px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.app-sidenav {
+  padding: 10px;
+  min-width: 100px;
+  padding-top: 60px;
+}
+.app-content md-checkbox { margin: 10px; }
+.app-toolbar-filler { flex: 1 1 auto; }
+.app-toolbar-menu {
+  padding: 0 14px 0 14px;
+  color: white;
+}
+.app-icon-button {
+  box-shadow: none;
+  user-select: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  filter: none;
+  font-weight: normal;
+  height: auto;
+  line-height: inherit;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+  text-align: left;
+  text-decoration: none;
+}
+.app-action {
+  display: inline-block;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+.app-spinner {
+  height: 30px;
+  width: 30px;
+  display: inline-block;
+}
+.app-input-icon { font-size: 16px; }
+.app-list {
+  border: 1px solid rgba(0,0,0,0.12);
+  width: 350px;
+  margin: 20px;
+}
+.app-progress { margin: 20px; }

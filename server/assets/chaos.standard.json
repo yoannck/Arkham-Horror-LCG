@@ -1,0 +1,5 @@
+{
+  "title": "Chaos Bag Standard",
+  "type": "chaosbag",
+  "chaos": ["+1", "0", "0", "-1", "-1", "-1", "-2", "-2", "-3", "-4", "skull", "skull", "cultist", "tablet", "autofail", "eldersign"]
+}
