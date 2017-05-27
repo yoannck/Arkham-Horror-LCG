@@ -4,9 +4,10 @@
   "license": "MIT",
   "author": "Yoann Chane Kive",
   "description": "ahlcg online",
+  "main": "server.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node server.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
